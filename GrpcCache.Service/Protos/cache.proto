@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcCache.Service";
+
+package cache;
+
+// The greeting service definition.
+service Cache {
+  // Sends a greeting
+  rpc RequestLock (LockRequest) returns (LockResponse);
+
+  rpc DequeueMessages (AuthorizedMessageRequest) returns (stream BotActivity);
+
+  rpc EnqueueMessages (stream BotActivity) returns (Ack);
+}
+
+message Ack {
+	int32 ack = 1;
+}
+
+message LockRequest {
+  string conversationId = 1;
+}
+
+message LockResponse {
+	bool acquiredLock = 1;
+	enum Reason {
+		LOCKED = 0;
+		NOT_FOUND = 1;
+		QUEUE_EMPTY = 2;
+		SUCCESS = 3;
+	}
+	Reason reason = 2;
+	int32 lockId = 3;
+}
+
+message AuthorizedMessageRequest {
+	string conversationId = 1;
+	int32 lockId = 2;
+}
+
+message BotActivity {
+	string conversationId = 1;
+	repeated BotAttachment attachments = 2;
+	string text = 3;
+}
+
+message BotAttachment {
+	string contentType = 1;
+	string content = 2;
+}
