@@ -18,7 +18,7 @@ namespace GrpcCache.Service
     {
         private readonly ILogger<CacheService> _logger;
         private readonly IDistributedCache _distributedCache;
-        private readonly IDictionary<string, int> _locks;
+        private static readonly IDictionary<string, int> _locks = new Dictionary<string, int>();
 
         public CacheService(ILogger<CacheService> logger, IDistributedCache distributedMemoryCache)
         {
